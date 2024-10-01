@@ -4,7 +4,7 @@ import random
 import pygame
 
 class Model:
-    def __init__(self, grid:Grid,population_density,happinessCount:dict):
+    def __init__(self, grid:Grid,k):
         self.__width = grid.height  # Width and height in number of cells
         self.__height = grid.width
         self.grid = grid
@@ -13,6 +13,12 @@ class Model:
                                [-1,0],     [1,0],
                                     [0,1]
                               ]
+        self.k=k
+        self.T=100
+        self.state = [0 for x in range(self.T)]
+        self.c=[random.randrange(0,self.T) for x in range(self.T)]
+        z=1
+        
         
 
     def setup(self):
@@ -39,88 +45,42 @@ class Model:
 
                     
     
-    # def countHappiness(self,x,y):
-    #     happyCount = 0 
-    #     for x_delta,y_delta in self.upRightDownLeft:
-    #         if self.grid[x,y] == self.grid[x+x_delta,y+y_delta]:
-    #             happyCount+=1
-    #     return happyCount
-    
-    # def move(self,x,y):
-    #     for x_delta,y_delta in self.upRightDownLeft:
-    #         char = self.grid[x,y]
-    #         if x+x_delta>=0 and x+x_delta<self.__width and y+y_delta>=0 and y+y_delta<self.__height and self.grid[x+x_delta,y+y_delta] is None:
-    #             self.grid[x+x_delta,y+y_delta]=char
-    #             self.grid[x,y] = None
-    #             break
-    #     return
-    
-    # def move2(self,x,y):
-    #     openLocations = []
-    #     char = self.grid[x,y]
-    #     for x_delta,y_delta in self.upRightDownLeft:
-    #         neighborX = x+x_delta
-    #         neighborY = y+y_delta
-    #         if neighborX>=0 and neighborX<self.__width and y+y_delta>=0 and y+y_delta<self.__height and self.grid[x+x_delta,y+y_delta] is None:
-    #             openLocations.append([x+x_delta,y+y_delta])
-
-    #     if len(openLocations)>0:    
-    #         toMove = random.choice(openLocations)
-    #         self.grid[toMove[0],toMove[1]]=char
-    #         self.grid[x,y] = None
-
-    #     return    
-
+    def isNeighborOn(self,x,y):
+        isOn = False
+        for x_delta,y_delta in self.upLeftRightDown:
+            index = (y+y_delta)*10+(x+x_delta)
+            if index>=0 and index <self.T:
+                if self.state[index]==1:
+                    isOn = True
+                    return isOn
+        
     def run_sim(self):
         BLACK = (0, 0, 0)
 
-        if self.sim_runs==100:
+        if self.sim_runs==self.T:
             return
-        #global isX, counter, grid,isActive
+  
         for y in range(self.__height):        
             for x in range(self.__width):
-                print(self.grid[x,y])
-                #print(self.grid[x,y])
-                # if self.grid[x,y] is None:
-                #     continue
-                # count = self.countHappiness(x,y)
-                # percentages = list(self.happinessCount.keys())
-                # if len(self.happinessCount)==1:
-                #     if count< self.happinessCount[percentages[0]]:
-                #         self.move2(x,y)
-                # else:
-                #     threshold = float(percentages[0])
-                #     itemThreshold = random.random()
-                #     if itemThreshold<=threshold:
-                #         if count < self.happinessCount[percentages[0]]:
-                #             self.move2(x,y)
-                #     else:
-                #         if count < self.happinessCount[percentages[1]]:
-                #             self.move2(x,y)
+                index = y*10+x
+                self.c[index]=self.c[index]+1
+                if self.isNeighborOn(x,y):
+                    #self.c[index]=self.c[index]+(self.k*self.c[index])
+                    self.c[index]=self.c[index]+self.k*self.c[index]
+                if self.c[index]>=self.T:
+                    self.grid[x,y]="X"
+                    self.state[index]=1
+                    self.c[index]=0
+                else:
+                    self.grid[x,y]="O"
+                    self.state[index]=0
+        
+
         self.sim_runs+=1
-        # myFont = pygame.font.SysFont("Times New Roman", 14)
 
-        # randNumLabel = myFont.render("Simulation: ", 1, BLACK)
-        # ### pass a string to myFont.render
-        # diceDisplay = myFont.render(str( self.sim_runs), 1, BLACK)
-
-        # self.grid.screen.blit(randNumLabel, (10, 20))
-        # self.grid.screen.blit(diceDisplay, (10, 40))
         print("Simulation:",self.sim_runs)
 
         if self.sim_runs==100:
             self.printStats()
     
     
-    # def timer_action(self):
-    #     #global isX, counter, grid,isActive
-        
-    #     if self.isX:
-    #         char='X'
-    #     else:
-    #         char='O'
-    #     self.grid[self.sim_runs, self.sim_runs] = char
-        
-    #     self.isX = False if self.isX else True
-    #     self.sim_runs+=1
-    #     print("Simulation:",self.sim_runs)

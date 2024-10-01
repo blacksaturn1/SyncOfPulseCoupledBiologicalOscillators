@@ -57,12 +57,11 @@ if __name__ == '__main__':
     grid.set_drawaction('O', draw_Off) # Green
     grid.set_drawaction('X', draw_On) # Red
     
-    model = Model(grid,0,0)
-    # grid.set_timer_action(model.timer_action)
+    model = Model(grid,.99999)
+ 
     grid.set_timer_action(model.run_sim)
 
     model.setup()
     
     grid.run()
 
-#pygame.display.flip()
