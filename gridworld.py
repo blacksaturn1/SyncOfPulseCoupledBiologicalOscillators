@@ -495,7 +495,7 @@ class Grid(GridBase):
         self.counter = 0
         # -------- Main Program Loop -----------
         while True:
-            if self.counter in (0, 50, 100, 1000):
+            if self.counter < 150 or self.counter%100==0:
                 fileName = "screenshot_"+str(self.counter)+".jpeg"
                 pygame.image.save(self.screen, fileName)
             self.counter += 1

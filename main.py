@@ -4,8 +4,6 @@ from functools import partial
 from model import Model
 import math
 import argparse
-import json
-
 
 def draw_Off(grid, cell_dimensions):
     
@@ -41,23 +39,20 @@ def draw_On(grid, cell_dimensions):
     pygame.draw.circle(grid.screen, RED, center, w*2/5 )
 
 if __name__ == '__main__':
-    # parser = argparse.ArgumentParser(
-    #                 prog='Synchronization of Pulse-Coupled Biological Oscillators',
-    #                 description='Implements https://epubs.siam.org/doi/10.1137/0150098'
-    #                 )
-    # #parser.add_argument('-happinessCount', required=False,help='happinessCount as dictionary')
-    # parser.add_argument('-populationDensity', required=False,help='populationDensity')
-
-    # args = parser.parse_args()
-    # happinessCount = json.loads(args.happinessCount)
-    # assert(len(happinessCount)>0 and len(happinessCount)<3) # we only want to allow 2 happinessCount
-    # populationDensity = float(args.populationDensity)
-    grid = Grid(10, 10, 40, 40, title='Sim of Pulse-Coupled Biological Oscillators', margin=1,framerate=10)
+    parser = argparse.ArgumentParser(
+                     prog='Synchronization of Pulse-Coupled Biological Oscillators',
+                     description='Implements approximation of https://epubs.siam.org/doi/10.1137/0150098'
+                     )
+    parser.add_argument('-k', required=False,help='Value of k between 0 and 1')
+    args = parser.parse_args()
+    k = float(args.k) if args.k != None else .7
+    
+    grid = Grid(10, 10, 40, 40, title='Sim of Pulse-Coupled Biological Oscillators', margin=1,framerate=20)
     
     grid.set_drawaction('O', draw_Off) # Green
     grid.set_drawaction('X', draw_On) # Red
     
-    model = Model(grid,.99999)
+    model = Model(grid,k)
  
     grid.set_timer_action(model.run_sim)
 

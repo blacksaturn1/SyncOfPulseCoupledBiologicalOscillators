@@ -16,11 +16,10 @@ class Model:
         self.k=k
         self.T=100
         self.state = [0 for x in range(self.T)]
-        self.c=[random.randrange(0,self.T) for x in range(self.T)]
-        z=1
-        
-        
-
+        self.c=[random.random()*self.T for x in range(self.T)]
+        a=1
+     
+     
     def setup(self):
         for y in range(self.__height):        
             for x in range(self.__width):
@@ -57,8 +56,8 @@ class Model:
     def run_sim(self):
         BLACK = (0, 0, 0)
 
-        if self.sim_runs==self.T:
-            return
+        # if self.sim_runs==self.T:
+        #     return
   
         for y in range(self.__height):        
             for x in range(self.__width):
@@ -80,7 +79,7 @@ class Model:
 
         print("Simulation:",self.sim_runs)
 
-        if self.sim_runs==100:
+        if self.sim_runs==self.T:
             self.printStats()
     
     
